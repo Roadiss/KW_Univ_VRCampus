@@ -15,6 +15,7 @@ public class playerScript : MonoBehaviour
 
     Vector3 moveVec;
     Rigidbody rigid;
+
     //Animator anim;
     public Camera firstPersonCamera;
     public Camera thirdPersonCamera;
@@ -34,7 +35,6 @@ public class playerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
         GetInput();
         Move();
         Turn();
@@ -52,9 +52,15 @@ public class playerScript : MonoBehaviour
 
     void Move(){
         moveVec = new Vector3(hAxis, 0,vAxis).normalized;
+        if(firstPersonCamera.enabled){
+            moveVec = firstPersonCamera.transform.TransformDirection(moveVec);
+            moveVec.y = 0;
+            //1인칭 이동
+        }
 
         transform.position += moveVec * speed * (wDown ? 0.3f : 1f) *Time.deltaTime;
-
+        //if(isCollision==0)
+         //  thirdPersonCamera.transform.position += moveVec * speed * (wDown ? 0.3f : 1f) *Time.deltaTime;
         //anim.SetBool("isRun",moveVec != Vector3.zero);
         //anim.SetBool("isWalk",wDown);
 
@@ -96,6 +102,4 @@ public class playerScript : MonoBehaviour
             }
         }
     }
-
-
 }

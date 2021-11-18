@@ -16,20 +16,21 @@ public class BackgroundScript : MonoBehaviour
     private Material skyDomeMaterial;
     private float offsetValueX = 0;
 
-    //for test
-    //public Button btn;
-    //private bool isNight; 
-
-    //public Text text;
-    //public Text state;
     private float elpasedTime;
     private float r = 1f;
     private float g = 1f;
     private float b = 1f;
 
+    Light sunLight;
+
+    void Awake(){
+        sunLight= GameObject.FindWithTag("Light").GetComponent<Light>();
+    }
+
     // Start is called before the first frame update
     void Start()
     {
+        sunLight.intensity = 1;
         this.skyDomeMaterial = this.skyDome.GetComponent<Renderer>().material; 
         this.skyDomeMaterial.SetTextureOffset("_MainTex", new Vector2(this.offsetValueX,0));
  
@@ -42,40 +43,6 @@ public class BackgroundScript : MonoBehaviour
             this.arrMaterials[i].globalIlluminationFlags = MaterialGlobalIlluminationFlags.RealtimeEmissive;
  
         }
-    
-        /*
-        //버튼 테스트
-        this.btn.onClick.AddListener(() =>
-        {
-            int index2 = 0;
-            if (!this.isNight) {
-                for (int i = 0; i < this.arrMaterials.Length; i++) {
-                    index2 = i;
-                    this.arrMaterials[index2].SetColor("_EmissionColor", Color.white);  //건물 안 조명키기
-                    RenderSettings.ambientLight = Color.black;  //씬 전체 라이트렌더링 어둡게 하기
- 
-                }
-                this.isNight = true;
-            }
-            else {
-                for (int i = 0; i < this.arrMaterials.Length; i++) {
-                    index2 = i;
-                    this.arrMaterials[index2].SetColor("_EmissionColor", Color.black);  //건물 안 조명 끄기
-                    RenderSettings.ambientLight = Color.white;  //씬 전체 라이트렌더링 밝게 하기
-                }
-                this.isNight = false;
- 
-            }
- 
-        });
-        
-
-        //시간테스트 코루틴 시작
-        if (!this.isNight) {
-            this.StartCoroutine(this.DayToNightImpl());
-        }
-
-        */
         this.StartCoroutine(this.DayToNightImpl());
     }
 
@@ -88,6 +55,7 @@ public class BackgroundScript : MonoBehaviour
     //낮 -> 밤
     IEnumerator DayToNightImpl(){
         while (true){
+            sunLight.intensity-=Time.deltaTime*(float)0.1;
             this.elpasedTime += Time.deltaTime;
             //this.text.text = this.elpasedTime.ToString();
             //this.state.text = "낮->밤";
@@ -140,6 +108,7 @@ public class BackgroundScript : MonoBehaviour
     IEnumerator NightToDayImpl()
     {
         while (true) {
+            sunLight.intensity+=Time.deltaTime*(float)0.1;
             this.elpasedTime += Time.deltaTime;
             //this.text.text = this.elpasedTime.ToString();
             //this.state.text = "밤->낮";
